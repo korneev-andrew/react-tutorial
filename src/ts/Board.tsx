@@ -1,15 +1,48 @@
 import React from 'react';
-import Square from './Square';
+import Square, {ValueType, getNextValue} from './Square';
 
 import '../css/Board.css';
 
-export default class Board extends React.Component {
-    renderSquare(i: string | number) {
-        return <Square value={i} />;
+interface BoardProps {
+
+}
+
+interface BoardState {
+    squares: Array<ValueType>;
+    currentValue: ValueType;
+}
+
+export default class Board extends React.Component<BoardProps, BoardState> {
+
+    constructor(props: BoardProps) {
+        super(props);
+        this.state = {
+            squares: Array(9).fill(null),
+            currentValue: 'X'
+        };
+    }
+
+    renderSquare(i: number) {
+        return (
+            <Square value={this.state.squares[i]}
+                    onClick={() => this.handleClick(i)}/>
+        );
+    }
+
+    handleClick(i: number): void {
+        const squares = this.state.squares.slice();
+
+        if (squares[i]) {
+            return;
+        }
+
+        squares[i] = this.state.currentValue;
+        
+        this.setState({squares: squares, currentValue: getNextValue(this.state.currentValue)});
     }
 
     render() {
-        const status = 'Next player: X';
+        const status = 'Next player: ' + this.state.currentValue;
 
         return (
             <div>

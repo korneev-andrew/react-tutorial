@@ -2,13 +2,21 @@ import React from 'react';
 
 import '../css/Square.css';
 
+export type ValueType = 'X' | 'O' | null;
+
 interface SquareProps {
-    value?: string | number;
+    value: ValueType;
+    onClick(): void;
 }
 
-const Square: React.FC<SquareProps> = (props: SquareProps) => {
+export function getNextValue(valueType: ValueType): ValueType {
+    return valueType === 'X' ? 'O' : 'X'
+} 
+
+const Square: React.FC<SquareProps> = (props) => {
     return (
-        <button className="square">
+        <button className="square"
+                onClick={props.onClick}>
             {props.value}
         </button>
     );
