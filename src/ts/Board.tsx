@@ -10,6 +10,7 @@ interface BoardProps {
 interface BoardState {
     squares: Array<ValueType>;
     currentValue: ValueType;
+    winner: ValueType;
 }
 
 export default class Board extends React.Component<BoardProps, BoardState> {
@@ -18,7 +19,8 @@ export default class Board extends React.Component<BoardProps, BoardState> {
         super(props);
         this.state = {
             squares: Array(9).fill(null),
-            currentValue: 'X'
+            currentValue: 'X',
+            winner: null
         };
     }
 
@@ -32,17 +34,29 @@ export default class Board extends React.Component<BoardProps, BoardState> {
     handleClick(i: number): void {
         const squares = this.state.squares.slice();
 
-        if (squares[i]) {
+        if (squares[i] || this.state.winner) {
             return;
         }
 
         squares[i] = this.state.currentValue;
+
+        const winner: ValueType = this.calculateWinner(squares);
+        if (winner) {
+            this.setState({winner: winner});
+        }
+
         
         this.setState({squares: squares, currentValue: getNextValue(this.state.currentValue)});
     }
 
     render() {
-        const status = 'Next player: ' + this.state.currentValue;
+        let status;
+
+        if (this.state.winner) {
+            status = 'Winner is: ' + this.state.winner;
+        } else {
+            status = 'Next player: ' + this.state.currentValue;
+        }
 
         return (
             <div>
@@ -67,4 +81,24 @@ export default class Board extends React.Component<BoardProps, BoardState> {
             </div>
         );
     }
+
+    private calculateWinner(squares: Array<ValueType>): ValueType {
+        const lines = [
+          [0, 1, 2],
+          [3, 4, 5],
+          [6, 7, 8],
+          [0, 3, 6],
+          [1, 4, 7],
+          [2, 5, 8],
+          [0, 4, 8],
+          [2, 4, 6],
+        ];
+        for (let i = 0; i < lines.length; i++) {
+          const [a, b, c] = lines[i];
+          if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+            return squares[a];
+          }
+        }
+        return null;
+      }
 }
