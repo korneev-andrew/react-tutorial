@@ -20,4 +20,8 @@
   .kbd-navigation .square:focus {
     background: #ddd;
   }
+
+  .win {
+    background: crimson;
+  }
   

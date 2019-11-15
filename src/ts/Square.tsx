@@ -1,21 +1,19 @@
 import React from 'react';
 
 import '../css/Square.css';
-
-export type ValueType = 'X' | 'O' | null;
+import { ValueType } from './Game';
 
 interface SquareProps {
     value: ValueType;
     onClick(): void;
+    win: boolean;
 }
 
-export function getNextValue(valueType: ValueType): ValueType {
-    return valueType === 'X' ? 'O' : 'X'
-} 
-
 const Square: React.FC<SquareProps> = (props) => {
+    const className = "square" + (props.win ? ' win' : '');
+
     return (
-        <button className="square"
+        <button className={className}
                 onClick={props.onClick}>
             {props.value}
         </button>
